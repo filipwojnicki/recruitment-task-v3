@@ -10,6 +10,7 @@ async function bootstrap() {
 
   app.use(helmet());
   app.setGlobalPrefix('api');
+  app.set('trust proxy', 'loopback');
 
   if (process.env.NODE_ENV === 'development') {
     const options = new DocumentBuilder()

@@ -1,6 +1,11 @@
 import { CacheModule, Module, CacheInterceptor } from '@nestjs/common';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
+
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { ThrottlerStorageRedisService } from 'nestjs-throttler-storage-redis';
+
+import * as redisStore from 'cache-manager-redis-store';
+import { REDIS } from '../conf/redis';
 
 import { AppController } from './controller/app.controller';
 import { AppService } from './service/app.service';
@@ -9,10 +14,14 @@ import { AppService } from './service/app.service';
   imports: [
     CacheModule.register({
       isGlobal: true,
+      store: redisStore,
+      ...REDIS,
+      db: 1,
     }),
     ThrottlerModule.forRoot({
       ttl: 60,
       limit: 10,
+      storage: new ThrottlerStorageRedisService({ ...REDIS }),
     }),
   ],
   controllers: [AppController],

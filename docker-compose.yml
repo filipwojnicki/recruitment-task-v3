@@ -8,11 +8,28 @@ services:
       - .:/usr/src/app
       - /usr/src/app/node_modules
     ports:
-      - ${APPLICATION_PORT}:3000
+      - 127.0.0.1:${APPLICATION_PORT}:3000
     env_file:
       - .env
-    networks:
-      - webnet
+    depends_on:
+      - redis
 
-networks:
-  webnet:
+  redis:
+    container_name: redis
+    image: 'redis:7-alpine'
+    command: redis-server --requirepass ${REDIS_PASS}
+    ports:
+      - '127.0.0.1:6379:6379'
+
+  nginx:
+    container_name: nginx
+    build:
+      context: .
+      target: nginx
+    depends_on:
+      - backend
+    ports:
+      - target: 80
+        published: 80
+        protocol: tcp
+        mode: host
