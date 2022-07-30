@@ -1,0 +1,20 @@
+services:
+  backend:
+    container_name: backend
+    build:
+      context: .
+      target: development
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - 8080:3000
+      - 9229:9229
+    command: npm run start:debug
+    env_file:
+      - .env
+    networks:
+      - webnet
+
+networks:
+  webnet:
