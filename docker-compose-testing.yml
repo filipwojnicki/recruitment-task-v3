@@ -1,0 +1,5 @@
+services:
+  backend:
+    command: npm run test:watch
+    ports:
+      - 127.0.0.1:9229:9229

@@ -3,14 +3,12 @@ services:
     container_name: backend
     build:
       context: .
-      target: development
+      target: ${NODE_ENV}
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
     ports:
-      - 8080:3000
-      - 9229:9229
-    command: npm run start:debug
+      - ${APPLICATION_PORT}:3000
     env_file:
       - .env
     networks:
