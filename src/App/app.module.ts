@@ -1,8 +1,9 @@
 import { CacheModule, Module, CacheInterceptor } from '@nestjs/common';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 
-import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { ThrottlerModule } from '@nestjs/throttler';
 import { ThrottlerStorageRedisService } from 'nestjs-throttler-storage-redis';
+import { ThrottlerBehindProxyGuard } from '../common/throttler-behind-proxy.guard';
 
 import * as redisStore from 'cache-manager-redis-store';
 import { REDIS } from '../conf/redis';
@@ -32,7 +33,7 @@ import { AppService } from './service/app.service';
     },
     {
       provide: APP_GUARD,
-      useClass: ThrottlerGuard,
+      useClass: ThrottlerBehindProxyGuard,
     },
     AppService,
   ],
