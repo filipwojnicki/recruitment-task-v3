@@ -2,11 +2,11 @@ services:
   backend:
     container_name: backend
     build:
-      context: .
+      context: backend/.
       target: ${NODE_ENV}
     volumes:
-      - .:/usr/src/app
-      - /usr/src/app/node_modules
+      - ./backend/.:/usr/src/app
+      - ./backend/node_modules:/usr/src/app/node_modules
     # ports:
     #   - 127.0.0.1:${APPLICATION_PORT}:3000
     env_file:
@@ -27,7 +27,7 @@ services:
   nginx:
     container_name: nginx
     build:
-      context: .
+      context: docker/nginx/.
       target: nginx
     depends_on:
       - backend
