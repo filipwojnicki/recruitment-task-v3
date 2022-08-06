@@ -22,8 +22,6 @@ services:
     volumes:
       - ./data-microservice/.:/usr/src/app
       - ./data-microservice/node_modules:/usr/src/app/node_modules
-    # ports:
-    #   - 127.0.0.1:${APPLICATION_PORT}:3000
     env_file:
       - .env
     depends_on:
