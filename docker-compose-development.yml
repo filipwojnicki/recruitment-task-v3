@@ -8,3 +8,4 @@ services:
     command: npm run start:debug
     ports:
       - 127.0.0.1:9230:9229
+      - 127.0.0.1:81:3000
