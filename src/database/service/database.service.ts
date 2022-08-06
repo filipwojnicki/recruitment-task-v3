@@ -21,10 +21,6 @@ export class DatabaseService implements OnModuleInit {
         process.env.DATABASE_FILE_LOCATION,
       );
 
-      // const adapter: any = new JSONFile<MovieData>(
-      //   process.env.DATABASE_FILE_LOCATION,
-      // );
-
       this.db = new this.lowdb.Low(JSONFile);
       await this.readData();
     } catch (error) {
