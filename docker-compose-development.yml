@@ -3,3 +3,8 @@ services:
     command: npm run start:debug
     ports:
       - 127.0.0.1:9229:9229
+
+  data-microservice:
+    command: npm run start:debug
+    ports:
+      - 127.0.0.1:9230:9229

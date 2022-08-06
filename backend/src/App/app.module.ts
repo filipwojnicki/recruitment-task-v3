@@ -12,7 +12,6 @@ import { AppController } from './controller/app.controller';
 import { AppService } from './service/app.service';
 
 import { MovieModule } from '../movie/movie.module';
-import { DatabaseModule } from '../database/database.module';
 
 @Module({
   imports: [
@@ -27,7 +26,6 @@ import { DatabaseModule } from '../database/database.module';
       limit: 10,
       storage: new ThrottlerStorageRedisService({ ...REDIS }),
     }),
-    DatabaseModule,
     MovieModule,
   ],
   controllers: [AppController],

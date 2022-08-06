@@ -12,6 +12,21 @@ services:
     env_file:
       - .env
     depends_on:
+      - data-microservice
+
+  data-microservice:
+    container_name: data-microservice
+    build:
+      context: data-microservice/.
+      target: ${NODE_ENV}
+    volumes:
+      - ./data-microservice/.:/usr/src/app
+      - ./data-microservice/node_modules:/usr/src/app/node_modules
+    # ports:
+    #   - 127.0.0.1:${APPLICATION_PORT}:3000
+    env_file:
+      - .env
+    depends_on:
       - redis
 
   redis:

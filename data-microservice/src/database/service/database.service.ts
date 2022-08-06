@@ -1,6 +1,6 @@
 import { Logger, Injectable, OnModuleInit } from '@nestjs/common';
 import type { Low, JSONFile } from 'lowdb';
-import { MovieData } from 'src/movie/types/movie-data.type';
+import { MovieData } from '../types/movie-data.type';
 
 @Injectable()
 export class DatabaseService implements OnModuleInit {
