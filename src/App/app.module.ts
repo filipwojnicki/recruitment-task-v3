@@ -11,6 +11,9 @@ import { REDIS } from '../conf/redis';
 import { AppController } from './controller/app.controller';
 import { AppService } from './service/app.service';
 
+import { MovieModule } from '../movie/movie.module';
+import { DatabaseModule } from '../database/database.module';
+
 @Module({
   imports: [
     CacheModule.register({
@@ -24,6 +27,8 @@ import { AppService } from './service/app.service';
       limit: 10,
       storage: new ThrottlerStorageRedisService({ ...REDIS }),
     }),
+    DatabaseModule,
+    MovieModule,
   ],
   controllers: [AppController],
   providers: [
