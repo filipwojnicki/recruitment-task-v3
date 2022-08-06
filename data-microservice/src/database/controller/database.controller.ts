@@ -6,7 +6,9 @@ export class DatabaseController {
   constructor(private readonly dbService: DatabaseService) {}
 
   @Get()
-  getData() {
-    return this.dbService.getData();
+  async getData() {
+    const data = await this.dbService.getData();
+    this.dbService.updateData(data);
+    return data;
   }
 }

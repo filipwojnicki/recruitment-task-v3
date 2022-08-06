@@ -1,5 +1,10 @@
 import { Logger, Injectable, OnModuleInit } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+
 import type { Low, JSONFile } from 'lowdb';
+
+import { dynamicImport } from '../../common/utils';
+import { DatabaseChangedEvent } from '../events/database-changed.event';
 import { MovieData } from '../types/movie-data.type';
 
 @Injectable()
@@ -7,7 +12,7 @@ export class DatabaseService implements OnModuleInit {
   private readonly logger = new Logger(DatabaseService.name);
   private db: Low<MovieData>;
 
-  constructor(private lowdb) {}
+  constructor(private eventEmitter: EventEmitter2) {}
 
   async onModuleInit(): Promise<void> {
     await this.initDatabase();
@@ -17,11 +22,13 @@ export class DatabaseService implements OnModuleInit {
     try {
       this.logger.log('Database init');
 
-      const JSONFile: JSONFile<MovieData> = new this.lowdb.JSONFile(
+      const lowdb = await dynamicImport('lowdb');
+
+      const JSONFile: JSONFile<MovieData> = new lowdb.JSONFile(
         process.env.DATABASE_FILE_LOCATION,
       );
 
-      this.db = new this.lowdb.Low(JSONFile);
+      this.db = new lowdb.Low(JSONFile);
       await this.readData();
     } catch (error) {
       this.logger.error(error?.message ? error.message : JSON.stringify(error));
@@ -65,6 +72,9 @@ export class DatabaseService implements OnModuleInit {
 
   async updateData(data: MovieData): Promise<void> {
     this.db.data = data;
-    // this.writeData();
+
+    const databaseChangedEvent = new DatabaseChangedEvent();
+    databaseChangedEvent.name = 'write-file';
+    this.eventEmitter.emit('database.changed', databaseChangedEvent);
   }
 }
