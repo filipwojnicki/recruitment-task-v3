@@ -6,6 +6,7 @@ import type { Low, JSONFile } from 'lowdb';
 import { dynamicImport } from '../../common/utils';
 import { DatabaseChangedEvent } from '../events/database-changed.event';
 import { MovieData } from '../types/movie-data.type';
+import { Movie } from '../types/movie.type';
 
 @Injectable()
 export class DatabaseService implements OnModuleInit {
@@ -76,5 +77,24 @@ export class DatabaseService implements OnModuleInit {
     const databaseChangedEvent = new DatabaseChangedEvent();
     databaseChangedEvent.name = 'write-file';
     this.eventEmitter.emit('database.changed', databaseChangedEvent);
+  }
+
+  getRandomOne(): Movie | null {
+    try {
+      if (!this.db) {
+        throw new Error("Database can't be read");
+      }
+
+      if (!this.db.hasOwnProperty('data')) {
+        throw new Error("Database can't be read");
+      }
+
+      return this.db.data.movies[
+        Math.floor(Math.random() * this.db.data.movies.length)
+      ];
+    } catch (error) {
+      this.logger.error(error?.message ? error.message : JSON.stringify(error));
+      return null;
+    }
   }
 }

@@ -1,14 +1,15 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller } from '@nestjs/common';
+import { MessagePattern } from '@nestjs/microservices';
+
 import { DatabaseService } from '../service/database.service';
 
-@Controller('database')
+@Controller()
 export class DatabaseController {
   constructor(private readonly dbService: DatabaseService) {}
 
-  @Get()
-  async getData() {
-    const data = await this.dbService.getData();
-    this.dbService.updateData(data);
+  @MessagePattern({ cmd: 'get-single-movie' })
+  async getSingleMovie() {
+    const data = await this.dbService.getRandomOne();
     return data;
   }
 }
