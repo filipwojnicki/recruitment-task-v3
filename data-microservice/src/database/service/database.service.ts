@@ -78,9 +78,13 @@ export class DatabaseService implements OnModuleInit {
   async updateData(data: MovieData): Promise<void> {
     this.db.data = data;
 
+    this.databaseEmitChangeEvent();
+  }
+
+  databaseEmitChangeEvent(): boolean {
     const databaseChangedEvent = new DatabaseChangedEvent();
     databaseChangedEvent.name = 'write-file';
-    this.eventEmitter.emit('database.changed', databaseChangedEvent);
+    return this.eventEmitter.emit('database.changed', databaseChangedEvent);
   }
 
   async addMovie(movieRepository, data: Movie): Promise<void> {

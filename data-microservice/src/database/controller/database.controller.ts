@@ -7,9 +7,8 @@ import { DatabaseService } from '../service/database.service';
 export class DatabaseController {
   constructor(private readonly dbService: DatabaseService) {}
 
-  @MessagePattern({ cmd: 'get-single-movie' })
-  async getSingleMovie() {
-    const data = await this.dbService.getRandomOne();
-    return data;
+  @MessagePattern({ cmd: 'database-changed' })
+  databaseHasChanged() {
+    return this.dbService.databaseEmitChangeEvent();
   }
 }
