@@ -70,11 +70,28 @@ export class DatabaseService implements OnModuleInit {
   }
 
   async readDataFromDatastore() {
-    const movieRepository = this.redisClient.fetchRepository(MovieSchema);
+    this.db.data.genres = (
+      await this.genreRepository
+        .search()
+        .return.all()
+        .catch(() => [])
+    ).map((genre) => genre.name);
+
+    this.db.data.movies = await this.movieRepository
+      .search()
+      .sortAscending('id')
+      .return.all()
+      .catch(() => []);
+
+    this.db.data.movies = this.db.data.movies.map((movie) => {
+      delete movie['entityId'];
+      return movie;
+    });
   }
 
   async writeData(): Promise<void> {
     try {
+      await this.readDataFromDatastore();
       await this.db.write();
       this.clearData();
     } catch (error) {
@@ -122,10 +139,7 @@ export class DatabaseService implements OnModuleInit {
     );
 
     this.movieRepository = this.redisClient.fetchRepository(MovieSchema);
-    await this.movieRepository.createIndex();
-
     this.genreRepository = this.redisClient.fetchRepository(GenreSchema);
-    await this.genreRepository.createIndex();
 
     if (lastImportedTimestamp) {
       const diffMsBetweenNowAndImport = Math.abs(
@@ -156,9 +170,9 @@ export class DatabaseService implements OnModuleInit {
         this.clearData();
         return;
       }
-
-      this.redis.flushDb();
     }
+
+    this.redis.flushDb();
 
     this.db.data.genres.map(async (genre) =>
       this.queue.add(() => this.addGenre(genre)),
@@ -171,6 +185,10 @@ export class DatabaseService implements OnModuleInit {
     this.clearData();
 
     await this.queue.onIdle();
+
+    await this.movieRepository.createIndex();
+    await this.genreRepository.createIndex();
+
     await this.redisClient.set('database-imported-time', Date.now().toString());
   }
 }
