@@ -14,7 +14,7 @@ export class MovieEntity extends Entity implements Movie {
 }
 
 export const MovieSchema = new Schema(MovieEntity, {
-  id: { type: 'number' },
+  id: { type: 'number', sortable: true },
   title: { type: 'text' },
   year: { type: 'number' },
   runtime: { type: 'number' },

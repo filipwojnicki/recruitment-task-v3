@@ -1,7 +1,7 @@
 import { Entity, Schema } from 'redis-om';
 import { Movie } from '../interface/movie.interface';
 
-class MovieEntity extends Entity implements Movie {
+export class MovieEntity extends Entity implements Movie {
   id: number;
   title: string;
   year: number;
@@ -14,7 +14,7 @@ class MovieEntity extends Entity implements Movie {
 }
 
 export const MovieSchema = new Schema(MovieEntity, {
-  id: { type: 'number' },
+  id: { type: 'number', sortable: true },
   title: { type: 'text' },
   year: { type: 'number' },
   runtime: { type: 'number' },
