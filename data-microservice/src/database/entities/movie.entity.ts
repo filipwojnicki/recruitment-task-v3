@@ -1,7 +1,7 @@
 import { Entity, Schema } from 'redis-om';
 import { Movie } from '../types/movie.type';
 
-class MovieEntity extends Entity implements Movie {
+export class MovieEntity extends Entity implements Movie {
   id: number;
   title: string;
   year: number;

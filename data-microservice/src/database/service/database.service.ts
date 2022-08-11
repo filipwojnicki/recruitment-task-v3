@@ -3,16 +3,16 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 
 import type { Low, JSONFile } from 'lowdb';
 import type { RedisClientType } from 'redis';
-import { Client } from 'redis-om';
+import { Client, Repository } from 'redis-om';
 
 import { dynamicImport } from '../../common/utils';
 import { DatabaseChangedEvent } from '../events/database-changed.event';
 
 import { MovieData } from '../types/movie-data.type';
 import type { Movie } from '../types/movie.type';
-import { MovieSchema } from '../entities/movie.entity';
+import { MovieSchema, MovieEntity } from '../entities/movie.entity';
 
-import { GenreSchema } from '../entities/genre.entity';
+import { GenreSchema, GenreEntity } from '../entities/genre.entity';
 
 @Injectable()
 export class DatabaseService implements OnModuleInit {
@@ -20,6 +20,9 @@ export class DatabaseService implements OnModuleInit {
   private readonly redisClient: Client = new Client();
   private db: Low<MovieData>;
   private queue;
+
+  private movieRepository: Repository<MovieEntity>;
+  private genreRepository: Repository<GenreEntity>;
 
   @Inject('REDIS_CLIENT') private readonly redis: RedisClientType;
 
@@ -66,19 +69,22 @@ export class DatabaseService implements OnModuleInit {
     }
   }
 
+  async readDataFromDatastore() {
+    const movieRepository = this.redisClient.fetchRepository(MovieSchema);
+  }
+
   async writeData(): Promise<void> {
     try {
       await this.db.write();
+      this.clearData();
     } catch (error) {
       this.logger.error(error?.message ? error.message : JSON.stringify(error));
       throw new Error("Database can't be write");
     }
   }
 
-  async updateData(data: MovieData): Promise<void> {
-    this.db.data = data;
-
-    this.databaseEmitChangeEvent();
+  clearData(): void {
+    this.db.data = { genres: [], movies: [] };
   }
 
   databaseEmitChangeEvent(): boolean {
@@ -87,8 +93,8 @@ export class DatabaseService implements OnModuleInit {
     return this.eventEmitter.emit('database.changed', databaseChangedEvent);
   }
 
-  async addMovie(movieRepository, data: Movie): Promise<void> {
-    const movie = movieRepository.createEntity();
+  async addMovie(data: Movie): Promise<void> {
+    const movie = this.movieRepository.createEntity();
 
     movie.id = Number(data.id);
     movie.title = data.title;
@@ -100,14 +106,14 @@ export class DatabaseService implements OnModuleInit {
     movie.posterUrl = data.posterUrl;
     movie.genres = data.genres;
 
-    await movieRepository.save(movie);
+    await this.movieRepository.save(movie);
   }
 
-  async addGenre(genreRepository, name: string): Promise<void> {
-    const genre = genreRepository.createEntity();
+  async addGenre(name: string): Promise<void> {
+    const genre = this.genreRepository.createEntity();
 
     genre.name = name;
-    await genreRepository.save(genre);
+    await this.genreRepository.save(genre);
   }
 
   async synchronizeWithRedis() {
@@ -115,11 +121,11 @@ export class DatabaseService implements OnModuleInit {
       'database-imported-time',
     );
 
-    const movieRepository = this.redisClient.fetchRepository(MovieSchema);
-    await movieRepository.createIndex();
+    this.movieRepository = this.redisClient.fetchRepository(MovieSchema);
+    await this.movieRepository.createIndex();
 
-    const genreRepository = this.redisClient.fetchRepository(GenreSchema);
-    await genreRepository.createIndex();
+    this.genreRepository = this.redisClient.fetchRepository(GenreSchema);
+    await this.genreRepository.createIndex();
 
     if (lastImportedTimestamp) {
       const diffMsBetweenNowAndImport = Math.abs(
@@ -132,8 +138,8 @@ export class DatabaseService implements OnModuleInit {
         )}, ${diffMsBetweenNowAndImport}ms from now.`,
       );
 
-      const movieCount = await movieRepository.search().return.count();
-      const genreCount = await genreRepository.search().return.count();
+      const movieCount = await this.movieRepository.search().return.count();
+      const genreCount = await this.genreRepository.search().return.count();
 
       this.logger.log(
         `Data store: Movies: ${movieCount}, genres: ${genreCount}`,
@@ -147,7 +153,7 @@ export class DatabaseService implements OnModuleInit {
         genreCount === this.db.data.genres.length &&
         diffMsBetweenNowAndImport < 5 * 60 * 1000
       ) {
-        this.db.data = { genres: [], movies: [] };
+        this.clearData();
         return;
       }
 
@@ -155,14 +161,14 @@ export class DatabaseService implements OnModuleInit {
     }
 
     this.db.data.genres.map(async (genre) =>
-      this.queue.add(() => this.addGenre(genreRepository, genre)),
+      this.queue.add(() => this.addGenre(genre)),
     );
 
     this.db.data.movies.map(async (movie) =>
-      this.queue.add(() => this.addMovie(movieRepository, movie)),
+      this.queue.add(() => this.addMovie(movie)),
     );
 
-    this.db.data = { genres: [], movies: [] };
+    this.clearData();
 
     await this.queue.onIdle();
     await this.redisClient.set('database-imported-time', Date.now().toString());
