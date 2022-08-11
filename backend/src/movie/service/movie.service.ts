@@ -1,7 +1,7 @@
 import { Logger, Injectable, Inject } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { Observable } from 'rxjs';
-import { Movie } from '../types/movie.type';
+import { Movie } from '../interface/movie.interface';
 
 @Injectable()
 export class MovieService {

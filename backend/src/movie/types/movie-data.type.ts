@@ -1,4 +1,4 @@
-import type { Movie } from './movie.type';
+import type { Movie } from '../interface/movie.interface';
 
 export type MovieData = {
   genres: string[];

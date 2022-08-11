@@ -12,7 +12,7 @@
  */
 
 export type Movie = {
-  id: number;
+  id?: number;
   title: string;
   year: number;
   runtime: number;
