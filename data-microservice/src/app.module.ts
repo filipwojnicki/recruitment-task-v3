@@ -6,6 +6,7 @@ import { REDIS } from './conf/redis';
 import { QueueModule } from './queue/queue.module';
 
 import { DatabaseModule } from './database/database.module';
+import { RedisModule } from './redis/redis.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { DatabaseModule } from './database/database.module';
     EventEmitterModule.forRoot(),
     DatabaseModule,
     QueueModule,
+    RedisModule,
   ],
 })
 export class AppModule {}
