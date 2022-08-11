@@ -24,7 +24,7 @@ import { MovieModule } from '../movie/movie.module';
     ThrottlerModule.forRoot({
       ttl: 60,
       limit: 10,
-      storage: new ThrottlerStorageRedisService({ ...REDIS }),
+      storage: new ThrottlerStorageRedisService({ ...REDIS, db: 1 }),
     }),
     MovieModule,
   ],
