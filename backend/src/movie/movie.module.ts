@@ -2,7 +2,8 @@ import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { MovieService } from './service/movie.service';
 import { MovieController } from './controller/movie.controller';
-import { REDIS } from 'src/conf/redis';
+import { REDIS } from '../conf/redis';
+import { RedisModule } from '../redis/redis.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { REDIS } from 'src/conf/redis';
         options: { ...REDIS },
       },
     ]),
+    RedisModule,
   ],
   providers: [MovieService],
   controllers: [MovieController],

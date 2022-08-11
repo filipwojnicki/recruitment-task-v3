@@ -13,6 +13,8 @@ import { AppService } from './service/app.service';
 
 import { MovieModule } from '../movie/movie.module';
 
+import { RedisModule } from '../redis/redis.module';
+
 @Module({
   imports: [
     CacheModule.register({
@@ -27,6 +29,7 @@ import { MovieModule } from '../movie/movie.module';
       storage: new ThrottlerStorageRedisService({ ...REDIS, db: 1 }),
     }),
     MovieModule,
+    RedisModule,
   ],
   controllers: [AppController],
   providers: [
