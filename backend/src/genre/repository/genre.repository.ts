@@ -19,4 +19,13 @@ export class GenreRepository implements OnModuleInit {
     await this.redisClient.use(this.redis);
     this.genreRepository = this.redisClient.fetchRepository(GenreSchema);
   }
+
+  async getAllGenres(): Promise<string[]> {
+    return (
+      await this.genreRepository
+        .search()
+        .return.all()
+        .catch(() => [])
+    ).map((genre) => genre.name);
+  }
 }

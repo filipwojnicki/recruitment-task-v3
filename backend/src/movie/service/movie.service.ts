@@ -5,6 +5,7 @@ import { MovieDto } from '../dto/movie.dto';
 import { MovieEntity } from '../entities/movie.entity';
 
 import { MovieRepository } from '../repository/movie.repository';
+import { GenreService } from '../../genre/service/genre.service';
 
 @Injectable()
 export class MovieService {
@@ -13,9 +14,22 @@ export class MovieService {
   constructor(
     @Inject('DATABASE_SERVICE') private dbClient: ClientProxy,
     private readonly movieRepository: MovieRepository,
+    private readonly genreService: GenreService,
   ) {}
 
-  async createMovie(movieDto: MovieDto): Promise<Observable<boolean>> {
+  async createMovie(
+    movieDto: MovieDto,
+  ): Promise<boolean | Observable<boolean>> {
+    if (movieDto.genres) {
+      const genresIsValid = await this.genreService.validateGenres(
+        movieDto.genres,
+      );
+
+      if (!genresIsValid) {
+        return false;
+      }
+    }
+
     await this.movieRepository.createMovie(movieDto);
     const status = await this.dbClient.send<boolean>(
       { cmd: 'database-changed' },
@@ -33,10 +47,10 @@ export class MovieService {
       return [];
     }
 
-    if (genres.length === 1) {
-      if (genres[0] === '') {
-        return [];
-      }
+    const genresIsValid = await this.genreService.validateGenres(genres);
+
+    if (!genresIsValid) {
+      return [];
     }
 
     return await this.movieRepository.getMoviesByGenres(genres);

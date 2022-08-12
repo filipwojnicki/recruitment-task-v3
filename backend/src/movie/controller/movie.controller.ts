@@ -22,7 +22,9 @@ export class MovieController {
   constructor(private readonly movieService: MovieService) {}
 
   @Post()
-  async createMovie(@Body() movieDto: MovieDto): Promise<Observable<boolean>> {
+  async createMovie(
+    @Body() movieDto: MovieDto,
+  ): Promise<boolean | Observable<boolean>> {
     try {
       return await this.movieService.createMovie(movieDto);
     } catch (error) {

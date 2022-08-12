@@ -5,6 +5,7 @@ import { MovieController } from './controller/movie.controller';
 import { MovieRepository } from './repository/movie.repository';
 import { REDIS } from '../conf/redis';
 import { RedisModule } from '../redis/redis.module';
+import { GenreModule } from '../genre/genre.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { RedisModule } from '../redis/redis.module';
       },
     ]),
     RedisModule,
+    GenreModule,
   ],
   providers: [MovieService, MovieRepository],
   controllers: [MovieController],

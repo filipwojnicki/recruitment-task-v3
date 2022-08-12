@@ -25,7 +25,6 @@ export class MovieRepository implements OnModuleInit {
     const movie = this.movieRepository.createEntity();
 
     const movieCount = await this.getMovieCount();
-    this.logger.debug(movieCount);
 
     movie.id = movieCount;
     movie.title = movieDto.title;
