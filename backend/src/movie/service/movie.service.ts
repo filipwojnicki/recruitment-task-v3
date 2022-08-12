@@ -29,6 +29,16 @@ export class MovieService {
   }
 
   async getMoviesByGenres(genres: string[]): Promise<MovieEntity[]> {
+    if (!genres.length) {
+      return [];
+    }
+
+    if (genres.length === 1) {
+      if (genres[0] === '') {
+        return [];
+      }
+    }
+
     return await this.movieRepository.getMoviesByGenres(genres);
   }
 }
