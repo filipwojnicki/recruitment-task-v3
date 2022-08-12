@@ -40,10 +40,25 @@ export class MovieRepository implements OnModuleInit {
     await this.movieRepository.save(movie);
   }
 
+  async getRandomOne(): Promise<MovieEntity[]> {
+    const movieCount = (await this.getMovieCount()) - this.additionalFieldCount;
+    const offset = this.randomNumberBetweenRange(0, movieCount);
+
+    return await this.movieRepository.search().return.page(offset, 1);
+  }
+
   async getMovieCount(): Promise<number> {
     return await this.movieRepository
       .search()
       .return.count()
       .catch(() => 0);
+  }
+
+  getAdditionalFieldCount(): number {
+    return this.additionalFieldCount;
+  }
+
+  randomNumberBetweenRange(min, max): number {
+    return Math.floor(Math.random() * (max - min)) + min;
   }
 }

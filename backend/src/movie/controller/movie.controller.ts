@@ -6,11 +6,15 @@ import {
   HttpStatus,
   Logger,
   Post,
+  Query,
 } from '@nestjs/common';
 import { MovieService } from '../service/movie.service';
 
 import { Movie } from '../interface/movie.interface';
 import { MovieDto } from '../dto/movie.dto';
+import { MovieQueryDto } from '../dto/movie-query.dto';
+import { MovieEntity } from '../entities/movie.entity';
+import { Observable } from 'rxjs';
 
 @Controller('movie')
 export class MovieController {
@@ -19,7 +23,7 @@ export class MovieController {
   constructor(private readonly movieService: MovieService) {}
 
   @Post()
-  async createMovie(@Body() movieDto: MovieDto) {
+  async createMovie(@Body() movieDto: MovieDto): Promise<Observable<boolean>> {
     try {
       return await this.movieService.createMovie(movieDto);
     } catch (error) {
@@ -32,5 +36,12 @@ export class MovieController {
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
+  }
+
+  @Get()
+  async getMovie(
+    @Query() movieQueryDto: MovieQueryDto,
+  ): Promise<MovieEntity[]> {
+    return await this.movieService.getRandomMovie();
   }
 }

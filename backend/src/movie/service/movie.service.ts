@@ -2,8 +2,8 @@ import { Logger, Injectable, Inject } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { Observable } from 'rxjs';
 import { MovieDto } from '../dto/movie.dto';
+import { MovieEntity } from '../entities/movie.entity';
 
-import { Movie } from '../interface/movie.interface';
 import { MovieRepository } from '../repository/movie.repository';
 
 @Injectable()
@@ -22,5 +22,9 @@ export class MovieService {
       {},
     );
     return status;
+  }
+
+  async getRandomMovie(): Promise<MovieEntity[]> {
+    return await this.movieRepository.getRandomOne();
   }
 }
