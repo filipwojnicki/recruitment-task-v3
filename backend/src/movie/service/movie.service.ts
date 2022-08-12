@@ -24,7 +24,7 @@ export class MovieService {
     return status;
   }
 
-  async getRandomMovie(): Promise<MovieEntity[]> {
-    return await this.movieRepository.getRandomOne();
+  async getRandomMovie(duration?: number): Promise<MovieEntity[]> {
+    return await this.movieRepository.getRandomOne(duration);
   }
 }

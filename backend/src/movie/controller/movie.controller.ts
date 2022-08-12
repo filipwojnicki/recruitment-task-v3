@@ -42,6 +42,10 @@ export class MovieController {
   async getMovie(
     @Query() movieQueryDto: MovieQueryDto,
   ): Promise<MovieEntity[]> {
+    if (movieQueryDto.duration > 0) {
+      return await this.movieService.getRandomMovie(movieQueryDto.duration);
+    }
+
     return await this.movieService.getRandomMovie();
   }
 }

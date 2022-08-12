@@ -40,9 +40,36 @@ export class MovieRepository implements OnModuleInit {
     await this.movieRepository.save(movie);
   }
 
-  async getRandomOne(): Promise<MovieEntity[]> {
-    const movieCount = (await this.getMovieCount()) - this.additionalFieldCount;
-    const offset = this.randomNumberBetweenRange(0, movieCount);
+  async getRandomOne(duration?: number): Promise<MovieEntity[]> {
+    let movieCount = 0;
+    let offset = 0;
+
+    if (duration) {
+      const durationMin = duration - 10 < 0 ? 0 : duration - 10;
+      const durationMax = duration + 10;
+
+      movieCount = await this.movieRepository
+        .search()
+        .where('runtime')
+        .is.greaterThanOrEqualTo(durationMin)
+        .and('runtime')
+        .is.lessThanOrEqualTo(durationMax)
+        .return.count()
+        .catch(() => 0);
+
+      offset = this.randomNumberBetweenRange(0, movieCount);
+
+      return await this.movieRepository
+        .search()
+        .where('runtime')
+        .is.greaterThanOrEqualTo(durationMin)
+        .and('runtime')
+        .is.lessThanOrEqualTo(durationMax)
+        .return.page(offset, 1);
+    }
+
+    movieCount = (await this.getMovieCount()) - this.additionalFieldCount;
+    offset = this.randomNumberBetweenRange(0, movieCount);
 
     return await this.movieRepository.search().return.page(offset, 1);
   }
