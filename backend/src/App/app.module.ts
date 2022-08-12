@@ -12,6 +12,7 @@ import { AppController } from './controller/app.controller';
 import { AppService } from './service/app.service';
 
 import { MovieModule } from '../movie/movie.module';
+import { GenreModule } from '../genre/genre.module';
 
 import { RedisModule } from '../redis/redis.module';
 
@@ -29,6 +30,7 @@ import { RedisModule } from '../redis/redis.module';
       storage: new ThrottlerStorageRedisService({ ...REDIS, db: 1 }),
     }),
     MovieModule,
+    GenreModule,
     RedisModule,
   ],
   controllers: [AppController],
