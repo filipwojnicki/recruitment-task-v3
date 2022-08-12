@@ -2,6 +2,8 @@
 
 ## Installation
 
+Clone git repository
+
 Place the database file in the correct directory or copy the sample file
 
 ```bash
