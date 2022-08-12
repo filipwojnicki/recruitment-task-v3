@@ -11,7 +11,7 @@
  * - genres (optional, string array)
  */
 
-export type Movie = {
+export interface Movie {
   id?: number;
   title: string;
   year: number;
@@ -21,4 +21,4 @@ export type Movie = {
   plot?: string;
   posterUrl?: string;
   genres?: string[];
-};
+}
