@@ -1,6 +1,6 @@
 import {
+  IsArray,
   IsInt,
-  IsNotEmpty,
   IsOptional,
   IsString,
   Length,
@@ -56,5 +56,7 @@ export class MovieDto implements Movie {
   posterUrl?: string;
 
   @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
   genres?: string[];
 }
