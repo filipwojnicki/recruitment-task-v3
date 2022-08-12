@@ -16,7 +16,7 @@ Place the database file in the correct directory or copy the sample file
 $ cp data-microservice/data/db-example.json data-microservice/data/db.json
 ```
 
-Create or copy example .env file
+Create or copy example .env file, edit it if needed
 
 ```bash
 $ cp .env-example .env
