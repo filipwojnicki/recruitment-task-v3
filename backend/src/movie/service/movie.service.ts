@@ -27,4 +27,8 @@ export class MovieService {
   async getRandomMovie(duration?: number): Promise<MovieEntity[]> {
     return await this.movieRepository.getRandomOne(duration);
   }
+
+  async getMoviesByGenres(genres: string[]): Promise<MovieEntity[]> {
+    return await this.movieRepository.getMoviesByGenres(genres);
+  }
 }

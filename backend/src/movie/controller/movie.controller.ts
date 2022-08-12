@@ -10,7 +10,6 @@ import {
 } from '@nestjs/common';
 import { MovieService } from '../service/movie.service';
 
-import { Movie } from '../interface/movie.interface';
 import { MovieDto } from '../dto/movie.dto';
 import { MovieQueryDto } from '../dto/movie-query.dto';
 import { MovieEntity } from '../entities/movie.entity';
@@ -42,10 +41,29 @@ export class MovieController {
   async getMovie(
     @Query() movieQueryDto: MovieQueryDto,
   ): Promise<MovieEntity[]> {
-    if (movieQueryDto.duration > 0) {
-      return await this.movieService.getRandomMovie(movieQueryDto.duration);
-    }
+    try {
+      if (movieQueryDto.duration > 0) {
+        return await this.movieService.getRandomMovie(movieQueryDto.duration);
+      }
 
-    return await this.movieService.getRandomMovie();
+      if (movieQueryDto.genres) {
+        if (!movieQueryDto.genres.length) {
+          return [];
+        }
+
+        return await this.movieService.getMoviesByGenres(movieQueryDto.genres);
+      }
+
+      return await this.movieService.getRandomMovie();
+    } catch (error) {
+      this.logger.error(
+        error.hasOwnProperty('message') ? error.message : JSON.stringify(error),
+      );
+
+      throw new HttpException(
+        'Problem with getting a movie.',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 }

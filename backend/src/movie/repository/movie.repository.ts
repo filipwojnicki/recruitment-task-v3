@@ -74,6 +74,14 @@ export class MovieRepository implements OnModuleInit {
     return await this.movieRepository.search().return.page(offset, 1);
   }
 
+  async getMoviesByGenres(genres: string[]): Promise<MovieEntity[]> {
+    return await this.movieRepository
+      .search()
+      .where('genres')
+      .containOneOf(...genres)
+      .return.all();
+  }
+
   async getMovieCount(): Promise<number> {
     return await this.movieRepository
       .search()
