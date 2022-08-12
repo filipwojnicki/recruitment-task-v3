@@ -1,5 +1,5 @@
 import { Transform } from 'class-transformer';
-import { IsInt, IsOptional } from 'class-validator';
+import { IsArray, IsInt, IsOptional, IsString } from 'class-validator';
 
 function toPositiveNumber(value: string): number {
   let newValue: number = Number.parseInt(value, 10);
@@ -17,6 +17,9 @@ export class MovieQueryDto {
   @IsInt()
   public duration: number = 0;
 
+  @Transform(({ value }) => value.trim().split(','))
   @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
   public genres: string[];
 }
