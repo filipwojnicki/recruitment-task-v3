@@ -18,7 +18,7 @@ $ cp .env-example .env
 
 ## Running the app
 
-Run application in development mode using docker
+Run application in development mode using docker compose
 
 ```bash
 $ docker-compose  -f docker-compose.yml -f docker-compose-development.yml up --build -V
