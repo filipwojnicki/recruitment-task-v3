@@ -20,17 +20,8 @@ export class MovieService {
   async createMovie(
     movieDto: MovieDto,
   ): Promise<boolean | Observable<boolean>> {
-    if (movieDto.genres) {
-      const genresIsValid = await this.genreService.validateGenres(
-        movieDto.genres,
-      );
-
-      if (!genresIsValid) {
-        return false;
-      }
-    }
-
     await this.movieRepository.createMovie(movieDto);
+
     const status = await this.dbClient.send<boolean>(
       { cmd: 'database-changed' },
       {},
