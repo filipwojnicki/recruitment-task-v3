@@ -3,6 +3,7 @@ import {
   IsArray,
   IsInt,
   IsOptional,
+  IsPositive,
   IsString,
   Max,
   Min,
@@ -22,7 +23,6 @@ export class MovieQueryDto {
   @Transform(({ value }) => toPositiveNumber(value))
   @IsOptional()
   @IsInt()
-  @Min(1)
   @Max(9999)
   public duration: number = 0;
 
