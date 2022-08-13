@@ -17,7 +17,12 @@ export class MovieQueryDto {
   @IsInt()
   public duration: number = 0;
 
-  @Transform(({ value }) => value.replace(/\s/g, '').split(','))
+  @Transform(({ value }) =>
+    value
+      .replace(/\s/g, '')
+      .replace(/[^a-z,-]/gi, '')
+      .split(','),
+  )
   @IsOptional()
   @IsArray()
   @IsString({ each: true })
