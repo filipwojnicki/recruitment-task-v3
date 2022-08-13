@@ -1,13 +1,5 @@
 import { Transform } from 'class-transformer';
-import {
-  IsArray,
-  IsInt,
-  IsOptional,
-  IsPositive,
-  IsString,
-  Max,
-  Min,
-} from 'class-validator';
+import { IsArray, IsInt, IsOptional, IsString, Max } from 'class-validator';
 
 function toPositiveNumber(value: string): number {
   let newValue: number = Number.parseInt(value, 10);
