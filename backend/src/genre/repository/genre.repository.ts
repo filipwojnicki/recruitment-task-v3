@@ -46,7 +46,7 @@ export class GenreRepository implements OnModuleInit {
         searchObject.or('name').match(genre);
       }
 
-      const genresInSchema = await (
+      const genresInSchema = (
         await searchObject.return.all().catch(() => [])
       ).map((genre) => genre.name);
 
