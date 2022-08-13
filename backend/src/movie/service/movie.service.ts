@@ -47,12 +47,12 @@ export class MovieService {
       return [];
     }
 
-    const genresIsValid = await this.genreService.validateGenres(genres);
+    const validGenres = await this.genreService.serializeGenres(genres);
 
-    if (!genresIsValid) {
+    if (!validGenres.length) {
       return [];
     }
 
-    return await this.movieRepository.getMoviesByGenres(genres);
+    return await this.movieRepository.getMoviesByGenres(validGenres);
   }
 }
