@@ -50,11 +50,9 @@ export class GenreRepository implements OnModuleInit {
         await searchObject.return.all().catch(() => [])
       ).map((genre) => genre.name);
 
-      console.log(genresInSchema);
-
       return genresInSchema;
     } catch (error) {
-      // this.logger.error(error?.message ? error.message : JSON.stringify(error));
+      this.logger.error(error?.message ? error.message : JSON.stringify(error));
       return [];
     }
   }
