@@ -1,5 +1,6 @@
 import { Transform } from 'class-transformer';
 import { IsArray, IsInt, IsOptional, IsString, Max } from 'class-validator';
+import { GENRE_TRANSFORM_REGEX } from '../../common/consts';
 
 function toPositiveNumber(value: string): number {
   let newValue: number = Number.parseInt(value, 10);
@@ -19,10 +20,7 @@ export class MovieQueryDto {
   public duration: number = 0;
 
   @Transform(({ value }) =>
-    value
-      .replace(/\s/g, '')
-      .replace(/[^a-z,-]/gi, '')
-      .split(','),
+    value.replace(/\s/g, '').replace(GENRE_TRANSFORM_REGEX, '').split(','),
   )
   @IsOptional()
   @IsArray()
