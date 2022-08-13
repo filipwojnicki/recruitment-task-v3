@@ -28,4 +28,34 @@ export class GenreRepository implements OnModuleInit {
         .catch(() => [])
     ).map((genre) => genre.name);
   }
+
+  async serializeGenres(genres: string[]): Promise<string[]> {
+    try {
+      const searchObject = this.genreRepository.search();
+
+      genres = genres.filter((genre) =>
+        genre ? (genre !== '' ? genre : false) : false,
+      );
+
+      for (const [index, genre] of genres.entries()) {
+        if (index == 0) {
+          searchObject.where('name').match(genre);
+          continue;
+        }
+
+        searchObject.or('name').match(genre);
+      }
+
+      const genresInSchema = await (
+        await searchObject.return.all().catch(() => [])
+      ).map((genre) => genre.name);
+
+      console.log(genresInSchema);
+
+      return genresInSchema;
+    } catch (error) {
+      // this.logger.error(error?.message ? error.message : JSON.stringify(error));
+      return [];
+    }
+  }
 }

@@ -12,4 +12,12 @@ export class GenreService {
 
     return genresToValidate.every((genre) => genres.includes(genre));
   }
+
+  async serializeGenres(genres: string[]): Promise<string[]> {
+    if (!genres.length) {
+      return [];
+    }
+
+    return await this.genreRepository.serializeGenres(genres).catch(() => []);
+  }
 }
