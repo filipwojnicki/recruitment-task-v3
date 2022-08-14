@@ -21,12 +21,27 @@ export class MovieRepository implements OnModuleInit {
     this.movieRepository = this.redisClient.fetchRepository(MovieSchema);
   }
 
+  async getNextMovieId(): Promise<number> {
+    try {
+      const lastMovie = await this.movieRepository
+        .search()
+        .sortDescending('id')
+        .return.first();
+
+      if (!lastMovie) {
+        return 1;
+      }
+
+      return lastMovie.id + 1;
+    } catch (error) {
+      return 1;
+    }
+  }
+
   async createMovie(movieDto: MovieDto): Promise<void> {
     const movie = this.movieRepository.createEntity();
 
-    const movieCount = await this.getMovieCount();
-
-    movie.id = movieCount;
+    movie.id = await this.getNextMovieId();
     movie.title = movieDto.title;
     movie.year = movieDto.year;
     movie.runtime = movieDto.runtime;
