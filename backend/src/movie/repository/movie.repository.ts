@@ -62,24 +62,18 @@ export class MovieRepository implements OnModuleInit {
       const durationMin = duration - 10 < 0 ? 0 : duration - 10;
       const durationMax = duration + 10;
 
-      movieCount = await this.movieRepository
+      const durationSearchObject = this.movieRepository
         .search()
         .where('runtime')
         .is.greaterThanOrEqualTo(durationMin)
         .and('runtime')
-        .is.lessThanOrEqualTo(durationMax)
-        .return.count()
-        .catch(() => 0);
+        .is.lessThanOrEqualTo(durationMax);
+
+      movieCount = await durationSearchObject.return.count().catch(() => 0);
 
       offset = this.randomNumberBetweenRange(0, movieCount);
 
-      return await this.movieRepository
-        .search()
-        .where('runtime')
-        .is.greaterThanOrEqualTo(durationMin)
-        .and('runtime')
-        .is.lessThanOrEqualTo(durationMax)
-        .return.page(offset, 1);
+      return await durationSearchObject.return.page(offset, 1);
     }
 
     movieCount = (await this.getMovieCount()) - this.additionalFieldCount;
