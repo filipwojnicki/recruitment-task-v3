@@ -17,8 +17,10 @@ import { Observable } from 'rxjs';
 import { GenreService } from '../../genre/service/genre.service';
 
 import { GENRE_TRANSFORM_REGEX } from '../../common/consts';
+import { ApiBody, ApiQuery, ApiTags } from '@nestjs/swagger';
 
 @Controller('movie')
+@ApiTags('movie')
 export class MovieController {
   private readonly logger = new Logger(MovieController.name);
 
@@ -28,6 +30,10 @@ export class MovieController {
   ) {}
 
   @Post()
+  @ApiBody({
+    description: 'Add a movie',
+    type: MovieDto,
+  })
   async createMovie(
     @Body() movieDto: MovieDto,
   ): Promise<boolean | Observable<boolean>> {
@@ -64,6 +70,10 @@ export class MovieController {
   }
 
   @Get()
+  @ApiQuery({
+    description: 'Get a movie/movies based on parameters',
+    type: MovieQueryDto,
+  })
   async getMovie(
     @Query() movieQueryDto: MovieQueryDto,
   ): Promise<MovieEntity[]> {
