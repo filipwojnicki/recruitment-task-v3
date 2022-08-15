@@ -76,8 +76,8 @@ export class MovieRepository implements OnModuleInit {
       return await durationSearchObject.return.page(offset, 1);
     }
 
-    movieCount = (await this.getMovieCount()) - this.additionalFieldCount;
-    offset = this.randomNumberBetweenRange(0, movieCount);
+    movieCount = await this.getMovieCount();
+    offset = this.randomNumberBetweenRange(0, movieCount - 1);
 
     return await this.movieRepository.search().return.page(offset, 1);
   }
