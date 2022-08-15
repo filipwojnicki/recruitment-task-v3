@@ -5,10 +5,6 @@ import { GENRE_TRANSFORM_REGEX } from '../../common/consts';
 function toPositiveNumber(value: string): number {
   let newValue: number = Number.parseInt(value, 10);
 
-  if (Number.isNaN(newValue)) {
-    newValue = 0;
-  }
-
   return Math.abs(newValue);
 }
 
@@ -17,7 +13,7 @@ export class MovieQueryDto {
   @IsOptional()
   @IsInt()
   @Max(9999)
-  public duration: number = 0;
+  public duration: number;
 
   @Transform(({ value }) =>
     value.replace(/\s/g, '').replace(GENRE_TRANSFORM_REGEX, '').split(','),
