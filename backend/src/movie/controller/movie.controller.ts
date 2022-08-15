@@ -17,7 +17,7 @@ import { Observable } from 'rxjs';
 import { GenreService } from '../../genre/service/genre.service';
 
 import { GENRE_TRANSFORM_REGEX } from '../../common/consts';
-import { ApiBody, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @Controller('movie')
 @ApiTags('movie')
@@ -33,6 +33,19 @@ export class MovieController {
   @ApiBody({
     description: 'Add a movie',
     type: MovieDto,
+  })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'A movie has been successfully created.',
+    type: Boolean,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Validation error.',
+  })
+  @ApiResponse({
+    status: HttpStatus.INTERNAL_SERVER_ERROR,
+    description: 'Server-side error not catched.',
   })
   async createMovie(
     @Body() movieDto: MovieDto,
@@ -70,6 +83,19 @@ export class MovieController {
   }
 
   @Get()
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'A movie has been successfully fetched.',
+    type: [MovieEntity],
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Validation error.',
+  })
+  @ApiResponse({
+    status: HttpStatus.INTERNAL_SERVER_ERROR,
+    description: 'Server-side error not catched.',
+  })
   async getMovie(
     @Query() movieQueryDto: MovieQueryDto,
   ): Promise<MovieEntity[]> {
