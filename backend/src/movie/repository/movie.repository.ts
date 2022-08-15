@@ -1,6 +1,7 @@
 import { Logger, Injectable, Inject, OnModuleInit } from '@nestjs/common';
 
 import { Client, Repository } from 'redis-om';
+import type { Search } from 'redis-om';
 import type { RedisClientType } from 'redis';
 import { MovieEntity, MovieSchema } from '../entities/movie.entity';
 import { MovieDto } from '../dto/movie.dto';
@@ -10,7 +11,7 @@ export class MovieRepository implements OnModuleInit {
   private readonly logger = new Logger(MovieRepository.name);
   private readonly redisClient: Client = new Client();
   private movieRepository: Repository<MovieEntity>;
-  private readonly additionalFieldCount = 1;
+  private readonly additionalFieldCount: number = 1;
 
   constructor(
     @Inject('REDIS_CLIENT') private readonly redis: RedisClientType,
@@ -23,7 +24,7 @@ export class MovieRepository implements OnModuleInit {
 
   async getNextMovieId(): Promise<number> {
     try {
-      const lastMovie = await this.movieRepository
+      const lastMovie: MovieEntity = await this.movieRepository
         .search()
         .sortDescending('id')
         .return.first();
@@ -55,14 +56,14 @@ export class MovieRepository implements OnModuleInit {
   }
 
   async getRandomOne(duration?: number): Promise<MovieEntity[]> {
-    let movieCount = 0;
-    let offset = 0;
+    let movieCount: number = 0;
+    let offset: number = 0;
 
     if (duration) {
-      const durationMin = duration - 10 < 0 ? 0 : duration - 10;
-      const durationMax = duration + 10;
+      const durationMin: number = duration - 10 < 0 ? 0 : duration - 10;
+      const durationMax: number = duration + 10;
 
-      const durationSearchObject = this.movieRepository
+      const durationSearchObject: Search<MovieEntity> = this.movieRepository
         .search()
         .where('runtime')
         .is.greaterThanOrEqualTo(durationMin)
@@ -101,7 +102,7 @@ export class MovieRepository implements OnModuleInit {
     return this.additionalFieldCount;
   }
 
-  randomNumberBetweenRange(min, max): number {
+  randomNumberBetweenRange(min: number, max: number): number {
     return Math.floor(Math.random() * (max - min)) + min;
   }
 }
