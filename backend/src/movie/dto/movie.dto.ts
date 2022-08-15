@@ -9,18 +9,6 @@ import {
 } from 'class-validator';
 import { Movie } from '../interface/movie.interface';
 
-/**
- * Movie DTO
- * - title (required, string, max 255 characters)
- * - year (required, number)
- * - runtime (required, number)
- * - director (required, string, max 255 characters)
- * - actors (optional, string)
- * - plot (optional, string)
- * - posterUrl (optional, string)
- * - genres (optional, string array)
- */
-
 export class MovieDto implements Movie {
   @IsString()
   @Length(1, 255)
