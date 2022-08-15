@@ -17,7 +17,7 @@ import { Observable } from 'rxjs';
 import { GenreService } from '../../genre/service/genre.service';
 
 import { GENRE_TRANSFORM_REGEX } from '../../common/consts';
-import { ApiBody, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiTags } from '@nestjs/swagger';
 
 @Controller('movie')
 @ApiTags('movie')
@@ -70,10 +70,6 @@ export class MovieController {
   }
 
   @Get()
-  @ApiQuery({
-    description: 'Get a movie/movies based on parameters',
-    type: MovieQueryDto,
-  })
   async getMovie(
     @Query() movieQueryDto: MovieQueryDto,
   ): Promise<MovieEntity[]> {
