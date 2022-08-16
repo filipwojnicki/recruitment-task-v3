@@ -109,7 +109,14 @@ export class MovieController {
           return [];
         }
 
-        return await this.movieService.getMoviesByGenres(movieQueryDto.genres);
+        const data = await this.movieService.getMoviesByGenres(
+          movieQueryDto.genres,
+        );
+
+        return this.movieService.sortByGenresFrequency(
+          data,
+          movieQueryDto.genres,
+        );
       }
 
       return await this.movieService.getRandomMovie();

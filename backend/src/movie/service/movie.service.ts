@@ -46,4 +46,49 @@ export class MovieService {
 
     return await this.movieRepository.getMoviesByGenres(validGenres);
   }
+
+  sortByGenresFrequency(movies: MovieEntity[], genres: string[]) {
+    if (!genres.length) {
+      return movies;
+    }
+
+    const occurences: number[] = [];
+
+    for (const [index, movie] of movies.entries()) {
+      occurences[index] = 0;
+
+      if (!movie.genres) {
+        continue;
+      }
+
+      if (!movie.genres.length) {
+        continue;
+      }
+
+      for (const genre of movie.genres) {
+        if (genres.includes(genre)) {
+          occurences[index]++;
+        }
+      }
+    }
+
+    let max: number;
+
+    for (let i = 0; i < occurences.length; i++) {
+      max = i;
+
+      for (let j = i + 1; j < occurences.length; j++) {
+        if (occurences[j] > occurences[max]) {
+          max = j;
+        }
+      }
+
+      if (max !== i) {
+        [occurences[i], occurences[max]] = [occurences[max], occurences[i]];
+        [movies[i], movies[max]] = [movies[max], movies[i]];
+      }
+    }
+
+    return movies;
+  }
 }
