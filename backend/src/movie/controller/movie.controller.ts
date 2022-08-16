@@ -100,10 +100,6 @@ export class MovieController {
     @Query() movieQueryDto: MovieQueryDto,
   ): Promise<MovieEntity[]> {
     try {
-      if (movieQueryDto.duration >= 0) {
-        return await this.movieService.getRandomMovie(movieQueryDto.duration);
-      }
-
       if (movieQueryDto.genres) {
         if (!movieQueryDto.genres.length) {
           return [];
@@ -111,12 +107,17 @@ export class MovieController {
 
         const data = await this.movieService.getMoviesByGenres(
           movieQueryDto.genres,
+          movieQueryDto.duration,
         );
 
         return this.movieService.sortByGenresFrequency(
           data,
           movieQueryDto.genres,
         );
+      }
+
+      if (movieQueryDto.duration >= 0) {
+        return await this.movieService.getRandomMovie(movieQueryDto.duration);
       }
 
       return await this.movieService.getRandomMovie();

@@ -86,12 +86,27 @@ export class MovieRepository implements OnModuleInit {
     return await this.movieRepository.search().return.page(offset, 1);
   }
 
-  async getMoviesByGenres(genres: string[]): Promise<MovieEntity[]> {
-    return await this.movieRepository
+  async getMoviesByGenres(
+    genres: string[],
+    duration?: number,
+  ): Promise<MovieEntity[]> {
+    const moviesSearch: Search<MovieEntity> = this.movieRepository
       .search()
       .where('genres')
-      .containOneOf(...genres)
-      .return.all();
+      .containOneOf(...genres);
+
+    if (duration >= 0) {
+      const durationMin: number = duration - 10 < 0 ? 0 : duration - 10;
+      const durationMax: number = duration + 10;
+
+      moviesSearch
+        .and('runtime')
+        .is.greaterThanOrEqualTo(durationMin)
+        .and('runtime')
+        .is.lessThanOrEqualTo(durationMax);
+    }
+
+    return moviesSearch.return.all();
   }
 
   async getMovieCount(): Promise<number> {

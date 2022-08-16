@@ -33,7 +33,10 @@ export class MovieService {
     return await this.movieRepository.getRandomOne(duration);
   }
 
-  async getMoviesByGenres(genres: string[]): Promise<MovieEntity[]> {
+  async getMoviesByGenres(
+    genres: string[],
+    duration?: number,
+  ): Promise<MovieEntity[]> {
     if (!genres.length) {
       return [];
     }
@@ -44,7 +47,7 @@ export class MovieService {
       return [];
     }
 
-    return await this.movieRepository.getMoviesByGenres(validGenres);
+    return await this.movieRepository.getMoviesByGenres(validGenres, duration);
   }
 
   sortByGenresFrequency(movies: MovieEntity[], genres: string[]) {
