@@ -35,3 +35,9 @@ Run application in development mode using docker compose
 ```bash
 $ docker-compose  -f docker-compose.yml -f docker-compose-development.yml up --build -V
 ```
+
+## Documentation
+
+After successful launch of the application, the api documentation (Open api) is available at the url
+
+[Go to documentation](http://localhost/api/docs)
