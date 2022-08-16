@@ -1,3 +1,4 @@
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import { IsArray, IsInt, IsOptional, IsString, Max } from 'class-validator';
 import { GENRE_TRANSFORM_REGEX } from '../../common/consts';
@@ -13,6 +14,11 @@ export class MovieQueryDto {
   @IsOptional()
   @IsInt()
   @Max(9999)
+  @ApiProperty({
+    description: 'Duration of the movie in minutes',
+    example: 90,
+  })
+  @ApiPropertyOptional()
   public duration: number;
 
   @Transform(({ value }) =>
@@ -21,5 +27,12 @@ export class MovieQueryDto {
   @IsOptional()
   @IsArray()
   @IsString({ each: true })
+  @ApiProperty({
+    description:
+      'Array with genres of the movie, listed after the comma sign in one parameter',
+    type: String,
+    example: 'Drama, Romance',
+  })
+  @ApiPropertyOptional()
   public genres: string[];
 }
