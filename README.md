@@ -41,3 +41,7 @@ $ docker-compose  -f docker-compose.yml -f docker-compose-development.yml up --b
 After successful launch of the application, the api documentation (Open api) is available at the url
 
 [Go to documentation](http://localhost/api/docs)
+
+## Testing
+
+unit tests are not done yet
