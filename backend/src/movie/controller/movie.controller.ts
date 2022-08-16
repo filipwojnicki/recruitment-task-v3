@@ -100,7 +100,7 @@ export class MovieController {
     @Query() movieQueryDto: MovieQueryDto,
   ): Promise<MovieEntity[]> {
     try {
-      if (movieQueryDto.duration > 0) {
+      if (movieQueryDto.duration >= 0) {
         return await this.movieService.getRandomMovie(movieQueryDto.duration);
       }
 

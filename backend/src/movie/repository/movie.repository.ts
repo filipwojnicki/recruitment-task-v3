@@ -59,7 +59,7 @@ export class MovieRepository implements OnModuleInit {
     let movieCount: number = 0;
     let offset: number = 0;
 
-    if (duration) {
+    if (duration >= 0) {
       const durationMin: number = duration - 10 < 0 ? 0 : duration - 10;
       const durationMax: number = duration + 10;
 
